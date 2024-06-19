@@ -6,10 +6,12 @@ import {
   Patch,
   Param,
   Delete,
+  HttpCode,
 } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
+import { ReserveSpotDto } from './dto/reserve-spot.dto';
 
 @Controller('events')
 export class EventsController {
@@ -35,8 +37,14 @@ export class EventsController {
     return this.eventsService.update(id, updateEventDto);
   }
 
+  @HttpCode(204)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.eventsService.remove(id);
+  }
+
+  @Post(':id/reserve')
+  reserveSpots(@Body() dto: ReserveSpotDto, @Param('id') eventId: string) {
+    return this.eventsService.reserveSpot({ ...dto, eventId });
   }
 }
