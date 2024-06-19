@@ -25,16 +25,51 @@ model Event {
 }
 
 model Spot {
-  id        String     @id @default(uuid())
-  name      String
-  status    SpotStatus
-  createdAt DateTime   @default(now())
-  updateAt  DateTime   @updatedAt
-  eventId   String
-  Event     Event      @relation(fields: [eventId], references: [id])
+  id                String              @id @default(uuid())
+  name              String
+  status            SpotStatus
+  createdAt         DateTime            @default(now())
+  updateAt          DateTime            @updatedAt
+  eventId           String
+  Event             Event               @relation(fields: [eventId], references: [id])
+  Ticket            Ticket?
+  ResevationHistory ResevationHistory[]
 }
 
 enum SpotStatus {
   available
   reserved
+}
+
+model Ticket {
+  id         String     @id @default(uuid())
+  email      String
+  ticketKind TicketKind
+  createdAt  DateTime   @default(now())
+  updateAt   DateTime   @default(now())
+  spotId     String
+  Spot       Spot       @relation(fields: [spotId], references: [id])
+
+  @@unique([spotId]) //one to one relation
+}
+
+model ResevationHistory {
+  id         String       @id @default(uuid())
+  email      String
+  ticketKind TicketKind
+  status     TicketStatus
+  createdAt  DateTime     @default(now())
+  updateAt   DateTime     @default(now())
+  spotId     String
+  Spot       Spot         @relation(fields: [spotId], references: [id])
+}
+
+enum TicketKind {
+  full
+  half
+}
+
+enum TicketStatus {
+  reserved
+  canceled
 }
